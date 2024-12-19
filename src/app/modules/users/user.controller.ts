@@ -23,9 +23,8 @@ const createUser = async (req: Request, res: Response) => {
             success: false,
             message: "Validation error",
             statusCode: 400,
-            // error: error.details || error.message || "An error occurred",
-            error: error || error || "An error occurred",
-            stack: process.env.NODE_ENV !== "production" ? error.stack : undefined,
+            error: error,
+            stack: error.stack,
         });
     }
 };
@@ -51,7 +50,8 @@ export const loginUser = async (req: Request, res: Response) => {
             success: false,
             message: error.message,
             statusCode,
-            error: error.message || "An error occurred",
+            error: error,
+            stack: error.stack,
         });
     }
 };
