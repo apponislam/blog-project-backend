@@ -30,6 +30,33 @@ const createUser = async (req: Request, res: Response) => {
     }
 };
 
+export const loginUser = async (req: Request, res: Response) => {
+    try {
+        // console.log("test", req.user);
+        const { email, password } = req.body;
+
+        const { token, name, email: userEmail } = await userServices.loginUser(email, password);
+
+        res.status(200).json({
+            success: true,
+            message: "Login successful",
+            statusCode: 200,
+            data: {
+                token,
+            },
+        });
+    } catch (error: any) {
+        const statusCode = error.message === "User not found" || error.message === "Incorrect password" ? 401 : 500;
+        res.status(statusCode).json({
+            success: false,
+            message: error.message,
+            statusCode,
+            error: error.message || "An error occurred",
+        });
+    }
+};
+
 export const userController = {
     createUser,
+    loginUser,
 };
