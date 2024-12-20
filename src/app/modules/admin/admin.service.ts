@@ -1,15 +1,19 @@
+import AppError from "../../errors/AppError";
 import { BlogModel } from "../blogs/blog.model";
 import { UserModel } from "../users/user.mode";
 
 const deleteBlogByAdmin = async (blogId: string) => {
-    const updatedBlog = await BlogModel.findByIdAndUpdate(blogId, { isPublished: false }, { new: true });
+    const blog = await BlogModel.findById(blogId);
 
-    if (!updatedBlog) {
-        throw new Error("Blog not found.");
+    if (!blog) {
+        throw new AppError(404, "Blog not found.");
     }
-    if (!updatedBlog.isPublished) {
-        throw new Error("Blog is already unpublished.");
+
+    if (!blog.isPublished) {
+        throw new AppError(409, "Blog is already unpublished.");
     }
+
+    const updatedBlog = await BlogModel.findByIdAndUpdate(blogId, { isPublished: false }, { new: true });
 
     return updatedBlog;
 };
@@ -17,10 +21,10 @@ const deleteBlogByAdmin = async (blogId: string) => {
 const blockUser = async (userId: string) => {
     const user = await UserModel.findById(userId);
     if (!user) {
-        throw new Error("User not found");
+        throw new AppError(404, "User not found");
     }
     if (user.isBlocked) {
-        throw new Error("User is already blocked");
+        throw new AppError(409, "User is already blocked");
     }
     user.isBlocked = true;
     await user.save();

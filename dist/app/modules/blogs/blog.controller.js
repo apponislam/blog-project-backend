@@ -30,17 +30,17 @@ const createBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             },
         });
     }
-    catch (error) {
-        // console.log(error);
+    catch (err) {
         res.status(500).json({
             success: false,
             message: "Server error",
             statusCode: 500,
-            error: error,
+            error: err,
+            stack: err.stack,
         });
     }
 });
-const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const blogId = req.params.id;
         const userId = req.user._id; // Assuming `req.user` contains the authenticated user's ID
@@ -59,16 +59,17 @@ const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 });
-const deleteBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteBlog = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const blogId = req.params.id;
         const userId = req.user._id;
@@ -80,16 +81,17 @@ const deleteBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 });
-const getAllBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllBlogs = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const blogs = yield blog_services_1.blogServices.getAllBlogs(req.query);
         res.status(200).json({
@@ -100,13 +102,14 @@ const getAllBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
     catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 });
 exports.blogController = {

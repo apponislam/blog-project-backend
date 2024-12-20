@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { TBlog, TBlogsQuery } from "./blog.interface";
 import { BlogModel } from "./blog.model";
+import AppError from "../../errors/AppError";
 
 const createBlogIntoDB = async (title: string, content: string, userId: string) => {
     const blog = {
@@ -18,18 +19,28 @@ export const updateBlog = async (blogId: string, userId: Types.ObjectId, updateD
     const blog = await BlogModel.findOneAndUpdate({ _id: blogId, author: userId }, updateData, { new: true, runValidators: true }).populate("author", "-password");
 
     if (!blog) {
-        throw new Error("Blog not found or you are not authorized to update it.");
+        throw new AppError(403, "Blog not found or you are not authorized to update it.");
     }
 
     return blog;
 };
 
 const deleteBlog = async (blogId: string, userId: Types.ObjectId) => {
-    const updatedBlog = await BlogModel.findOneAndUpdate({ _id: blogId, author: userId, isPublished: true }, { isPublished: false }, { new: true });
+    const blog = await BlogModel.findOne({ _id: blogId });
 
-    if (!updatedBlog) {
-        throw new Error("Blog not found, already unpublished, or you are not authorized to update it.");
+    if (!blog) {
+        throw new AppError(404, "Blog not found.");
     }
+
+    if (!blog.isPublished) {
+        throw new AppError(409, "Blog is already unpublished.");
+    }
+
+    if (blog.author.toString() !== userId.toString()) {
+        throw new AppError(403, "You are not authorized to delete this blog.");
+    }
+
+    const updatedBlog = await BlogModel.findOneAndUpdate({ _id: blogId, author: userId, isPublished: true }, { isPublished: false }, { new: true });
 
     return updatedBlog;
 };

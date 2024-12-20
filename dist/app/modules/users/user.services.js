@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userServices = exports.loginUser = void 0;
 const config_1 = __importDefault(require("../../config"));
+const AppError_1 = __importDefault(require("../../errors/AppError"));
 const user_mode_1 = require("./user.mode");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -24,11 +25,11 @@ const createUserIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function
 const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_mode_1.UserModel.findOne({ email });
     if (!user) {
-        throw new Error("User not found");
+        throw new AppError_1.default(404, "User not found");
     }
     const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
     if (!isPasswordValid) {
-        throw new Error("Incorrect password");
+        throw new AppError_1.default(401, "Invalid credentials");
     }
     const token = jsonwebtoken_1.default.sign({ _id: user._id, email: user.email, role: user.role }, config_1.default.jwt_secret, { expiresIn: "30d" });
     return { token, name: user.name, email: user.email };

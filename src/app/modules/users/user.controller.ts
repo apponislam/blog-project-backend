@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { userServices } from "./user.services";
 import catchAsync from "../../utils/catchAsync";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.body;
         const result = await userServices.createUserIntoDB(user);
@@ -30,7 +30,7 @@ const createUser = async (req: Request, res: Response) => {
     }
 };
 
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // console.log("test", req.user);
         const { email, password } = req.body;
@@ -46,14 +46,15 @@ export const loginUser = async (req: Request, res: Response) => {
             },
         });
     } catch (error: any) {
-        const statusCode = error.message === "User not found" || error.message === "Incorrect password" ? 401 : 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message,
-            statusCode,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // const statusCode = error.message === "User not found" || error.message === "Incorrect password" ? 401 : 500;
+        // res.status(statusCode).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 };
 

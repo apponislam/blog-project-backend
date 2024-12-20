@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.adminController = void 0;
 const admin_service_1 = require("./admin.service");
-const deleteBlogByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteBlogByAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
         yield admin_service_1.adminServices.deleteBlogByAdmin(id);
@@ -22,16 +22,17 @@ const deleteBlogByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
     catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 });
-const blockUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const blockUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
         yield admin_service_1.adminServices.blockUser(id);
@@ -42,13 +43,14 @@ const blockUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message || "An error occurred",
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message || "An error occurred",
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 });
 exports.adminController = {

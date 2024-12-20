@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { blogServices } from "./blog.services";
 
 const createBlog = async (req: Request, res: Response) => {
@@ -19,18 +19,18 @@ const createBlog = async (req: Request, res: Response) => {
                 author: blog.author,
             },
         });
-    } catch (error) {
-        // console.log(error);
+    } catch (err: any) {
         res.status(500).json({
             success: false,
             message: "Server error",
             statusCode: 500,
-            error: error,
+            error: err,
+            stack: err.stack,
         });
     }
 };
 
-const updateBlog = async (req: Request, res: Response) => {
+const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const blogId = req.params.id;
         const userId = req.user._id; // Assuming `req.user` contains the authenticated user's ID
@@ -50,17 +50,18 @@ const updateBlog = async (req: Request, res: Response) => {
             },
         });
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 };
 
-const deleteBlog = async (req: Request, res: Response) => {
+const deleteBlog = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const blogId = req.params.id;
         const userId = req.user._id;
@@ -73,17 +74,18 @@ const deleteBlog = async (req: Request, res: Response) => {
             statusCode: 200,
         });
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 };
 
-const getAllBlogs = async (req: Request, res: Response) => {
+const getAllBlogs = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const blogs = await blogServices.getAllBlogs(req.query);
 
@@ -94,13 +96,14 @@ const getAllBlogs = async (req: Request, res: Response) => {
             data: blogs,
         });
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 };
 

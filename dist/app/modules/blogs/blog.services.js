@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogServices = exports.updateBlog = void 0;
 const blog_model_1 = require("./blog.model");
+const AppError_1 = __importDefault(require("../../errors/AppError"));
 const createBlogIntoDB = (title, content, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const blog = {
         title,
@@ -24,16 +28,23 @@ const createBlogIntoDB = (title, content, userId) => __awaiter(void 0, void 0, v
 const updateBlog = (blogId, userId, updateData) => __awaiter(void 0, void 0, void 0, function* () {
     const blog = yield blog_model_1.BlogModel.findOneAndUpdate({ _id: blogId, author: userId }, updateData, { new: true, runValidators: true }).populate("author", "-password");
     if (!blog) {
-        throw new Error("Blog not found or you are not authorized to update it.");
+        throw new AppError_1.default(403, "Blog not found or you are not authorized to update it.");
     }
     return blog;
 });
 exports.updateBlog = updateBlog;
 const deleteBlog = (blogId, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const updatedBlog = yield blog_model_1.BlogModel.findOneAndUpdate({ _id: blogId, author: userId, isPublished: true }, { isPublished: false }, { new: true });
-    if (!updatedBlog) {
-        throw new Error("Blog not found, already unpublished, or you are not authorized to update it.");
+    const blog = yield blog_model_1.BlogModel.findOne({ _id: blogId });
+    if (!blog) {
+        throw new AppError_1.default(404, "Blog not found.");
     }
+    if (!blog.isPublished) {
+        throw new AppError_1.default(409, "Blog is already unpublished.");
+    }
+    if (blog.author.toString() !== userId.toString()) {
+        throw new AppError_1.default(403, "You are not authorized to delete this blog.");
+    }
+    const updatedBlog = yield blog_model_1.BlogModel.findOneAndUpdate({ _id: blogId, author: userId, isPublished: true }, { isPublished: false }, { new: true });
     return updatedBlog;
 });
 const getAllBlogs = (query) => __awaiter(void 0, void 0, void 0, function* () {

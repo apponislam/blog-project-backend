@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userController = exports.loginUser = void 0;
 const user_services_1 = require("./user.services");
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.body;
         const result = yield user_services_1.userServices.createUserIntoDB(user);
@@ -37,7 +37,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
 });
-const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const loginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // console.log("test", req.user);
         const { email, password } = req.body;
@@ -52,14 +52,15 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        const statusCode = error.message === "User not found" || error.message === "Incorrect password" ? 401 : 500;
-        res.status(statusCode).json({
-            success: false,
-            message: error.message,
-            statusCode,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // const statusCode = error.message === "User not found" || error.message === "Incorrect password" ? 401 : 500;
+        // res.status(statusCode).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 });
 exports.loginUser = loginUser;

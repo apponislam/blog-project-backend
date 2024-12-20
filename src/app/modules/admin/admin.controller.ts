@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { adminServices } from "./admin.service";
 
-const deleteBlogByAdmin = async (req: Request, res: Response) => {
+const deleteBlogByAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
 
@@ -13,17 +13,18 @@ const deleteBlogByAdmin = async (req: Request, res: Response) => {
             statusCode: 200,
         });
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message,
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 };
 
-const blockUser = async (req: Request, res: Response) => {
+const blockUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
 
@@ -35,13 +36,14 @@ const blockUser = async (req: Request, res: Response) => {
             statusCode: 200,
         });
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: error.message || "An error occurred",
-            statusCode: 400,
-            error: error,
-            stack: error.stack,
-        });
+        next(error);
+        // res.status(400).json({
+        //     success: false,
+        //     message: error.message || "An error occurred",
+        //     statusCode: 400,
+        //     error: error,
+        //     stack: error.stack,
+        // });
     }
 };
 
