@@ -43,6 +43,21 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
+userSchema.pre("find", function (next) {
+    this.find({ isBlocked: { $ne: true } });
+    next();
+});
+
+userSchema.pre("findOne", function (next) {
+    this.find({ isBlocked: { $ne: true } });
+    next();
+});
+
+userSchema.pre("aggregate", function (next) {
+    this.pipeline().unshift({ $match: { isBlocked: { $ne: true } } });
+    next();
+});
+
 userSchema.post("save", function (doc, next) {
     doc.password = "";
     next();

@@ -50,7 +50,7 @@ const getAllBlogs = async (query: TBlogsQuery) => {
     const sortQuery: any = {};
     sortQuery[sortBy] = sortOrder === "asc" ? 1 : -1;
 
-    const blogs = await BlogModel.find(filterQuery).sort(sortQuery).populate("author", "name email role").select("_id title content author");
+    const blogs = await BlogModel.find(filterQuery).sort(sortQuery).populate("author", "name email role");
 
     return blogs;
 };

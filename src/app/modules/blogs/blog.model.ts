@@ -14,4 +14,19 @@ const blogSchema = new Schema<TBlog>(
     }
 );
 
+blogSchema.pre("find", function (next) {
+    this.find({ isPublished: { $ne: false } });
+    next();
+});
+
+blogSchema.pre("findOne", function (next) {
+    this.find({ isPublished: { $ne: false } });
+    next();
+});
+
+blogSchema.pre("aggregate", function (next) {
+    this.pipeline().unshift({ $match: { isPublished: { $ne: false } } });
+    next();
+});
+
 export const BlogModel = model<TBlog>("blog", blogSchema);

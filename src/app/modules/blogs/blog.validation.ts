@@ -12,9 +12,11 @@ export const blogPostSchema = z.object({
                 required_error: "Content is required",
             })
             .min(10, "Content must be at least 10 characters long"),
-        author: z.string({
-            required_error: "Author ID is required",
-        }),
+        author: z
+            .string({
+                required_error: "Author ID is required",
+            })
+            .optional(),
     }),
 });
 

@@ -14,9 +14,11 @@ exports.blogPostSchema = zod_1.z.object({
             required_error: "Content is required",
         })
             .min(10, "Content must be at least 10 characters long"),
-        author: zod_1.z.string({
+        author: zod_1.z
+            .string({
             required_error: "Author ID is required",
-        }),
+        })
+            .optional(),
     }),
 });
 exports.blogUpdateSchema = zod_1.z.object({

@@ -11,4 +11,16 @@ const blogSchema = new mongoose_1.Schema({
     timestamps: true,
     versionKey: false,
 });
+blogSchema.pre("find", function (next) {
+    this.find({ isPublished: { $ne: false } });
+    next();
+});
+blogSchema.pre("findOne", function (next) {
+    this.find({ isPublished: { $ne: false } });
+    next();
+});
+blogSchema.pre("aggregate", function (next) {
+    this.pipeline().unshift({ $match: { isPublished: { $ne: false } } });
+    next();
+});
 exports.BlogModel = (0, mongoose_1.model)("blog", blogSchema);

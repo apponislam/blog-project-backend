@@ -47,7 +47,7 @@ const getAllBlogs = (query) => __awaiter(void 0, void 0, void 0, function* () {
     }
     const sortQuery = {};
     sortQuery[sortBy] = sortOrder === "asc" ? 1 : -1;
-    const blogs = yield blog_model_1.BlogModel.find(filterQuery).sort(sortQuery).populate("author", "name email role").select("_id title content author");
+    const blogs = yield blog_model_1.BlogModel.find(filterQuery).sort(sortQuery).populate("author", "name email role");
     return blogs;
 });
 exports.blogServices = {
