@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { userServices } from "./user.services";
+import catchAsync from "../../utils/catchAsync";
 
 const createUser = async (req: Request, res: Response) => {
     try {
