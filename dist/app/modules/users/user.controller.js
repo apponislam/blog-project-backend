@@ -53,14 +53,6 @@ const loginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
     catch (error) {
         next(error);
-        // const statusCode = error.message === "User not found" || error.message === "Incorrect password" ? 401 : 500;
-        // res.status(statusCode).json({
-        //     success: false,
-        //     message: error.message,
-        //     statusCode,
-        //     error: error,
-        //     stack: error.stack,
-        // });
     }
 });
 exports.loginUser = loginUser;

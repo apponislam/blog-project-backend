@@ -7,6 +7,6 @@ import { userValidationLoginSchema, userValidationSchema } from "./user.validati
 const router = express.Router();
 
 router.post("/register", validateRequest(userValidationSchema), userController.createUser);
-router.post("/login", validateRequest(userValidationLoginSchema), verifyToken(), userController.loginUser);
+router.post("/login", validateRequest(userValidationLoginSchema), userController.loginUser);
 
 export const userRoute = router;
